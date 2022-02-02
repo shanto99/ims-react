@@ -1,11 +1,30 @@
 import React from "react";
+import { connect } from "react-redux";
+
+import { login } from "../../actions";
+
 import Logo from "../../images/logo.svg";
 import Illustration from "../../images/illustration.svg";
 
 import "./style.css";
 
 class Login extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            userId: '',
+            password: ''
+        }
+    }
+    makeLogin = (e) => {
+        e.preventDefault();
+        const {userId, password} = this.state;
+        this.props.login(userId, password);
+
+    }
     render() {
+        const {userId, password}  = this.state;
         return (
             <div className="login">
                 <div className="container sm:px-10">
@@ -31,30 +50,41 @@ class Login extends React.Component {
                                     Sign In
                                 </h2>
                                 <div className="intro-x mt-2 text-gray-500 xl:hidden text-center">A few more clicks to sign in to your account. Manage all your e-commerce accounts in one place</div>
-                                <div className="intro-x mt-8">
-                                    <input type="text" className="intro-x login__input form-control py-3 px-4 border-gray-300 block" placeholder="Email"/>
-                                    <input type="password" className="intro-x login__input form-control py-3 px-4 border-gray-300 block mt-4" placeholder="Password"/>
-                                </div>
-
-                                <div className="intro-x flex text-gray-700 dark:text-gray-600 text-xs sm:text-sm mt-4">
-                                    <div className="flex items-center mr-auto">
-                                        <input id="remember-me" type="checkbox" className="form-check-input border mr-2"/>
-                                        <label className="cursor-pointer select-none" for="remember-me">Remember me</label>
+                                <form onSubmit={this.makeLogin}>
+                                    <div className="intro-x mt-8">
+                                        <input type="text"
+                                        className="intro-x login__input form-control py-3 px-4 border-gray-300 block"
+                                        placeholder="Email"
+                                        value={userId}
+                                        onChange={(e) => {
+                                            this.setState({
+                                                userId: e.target.value
+                                            });
+                                        }}
+                                        />
+                                        <input type="password"
+                                        className="intro-x login__input form-control py-3 px-4 border-gray-300 block mt-4"
+                                        placeholder="Password"
+                                        value={password}
+                                        onChange={(e) => {
+                                            this.setState({
+                                                password: e.target.value
+                                            });
+                                        }}
+                                        />
                                     </div>
-                                    <a href="">Forgot Password?</a>
-                                </div>
 
-                                <div className="intro-x mt-5 xl:mt-8 text-center xl:text-left">
-                                    <button className="btn btn-primary py-3 px-4 w-full xl:w-32 xl:mr-3 align-top">Login</button>
-                                    <button className="btn btn-outline-secondary py-3 px-4 w-full xl:w-32 mt-3 xl:mt-0 align-top">Sign up</button>
-                                </div>
+                                    <div className="intro-x flex text-gray-700 dark:text-gray-600 text-xs sm:text-sm mt-4">
+                                        <div className="flex items-center mr-auto">
+                                            <input id="remember-me" type="checkbox" className="form-check-input border mr-2"/>
+                                            <label className="cursor-pointer select-none" for="remember-me">Remember me</label>
+                                        </div>
+                                    </div>
 
-                                <div className="intro-x mt-10 xl:mt-24 text-gray-700 dark:text-gray-600 text-center xl:text-left">
-                                    By signin up, you agree to our
-                                    <br/>
-                                    <a className="text-theme-1 dark:text-theme-10" href="">Terms and Conditions</a> & <a className="text-theme-1 dark:text-theme-10" href="">Privacy Policy</a>
-                                </div>
-
+                                    <div className="intro-x mt-5 xl:mt-8 text-center xl:text-left">
+                                        <button type="submit" className="btn btn-primary py-3 px-4 w-full xl:w-32 xl:mr-3 align-top">Login</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
 
@@ -65,4 +95,10 @@ class Login extends React.Component {
     }
 }
 
-export default Login;
+function mapStateToProps(state) {
+    return {
+        user: state.user
+    }
+}
+
+export default connect(mapStateToProps, {login})(Login);
