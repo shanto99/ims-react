@@ -15,23 +15,21 @@ import store from './store';
 
 function IMS() {
     return (
-        <div className="container">
-            <Provider store={store}>
-                <Router>
-                    <Routes>
-                        <Route path="/login" element={<Login/>} />
-                        <Route
-                            path="/*"
-                            element={
-                                <ProtectedRoute>
-                                    <Dashboard/>
-                                </ProtectedRoute>
-                            }
-                        />
-                    </Routes>
-                </Router>
-            </Provider>
-        </div>
+        <Provider store={store}>
+            <Router>
+                <Routes>
+                    <Route path="/login" element={<Login/>} />
+                    <Route
+                        path="/*"
+                        element={
+                            <ProtectedRoute>
+                                <Dashboard/>
+                            </ProtectedRoute>
+                        }
+                    />
+                </Routes>
+            </Router>
+        </Provider>
     );
 }
 

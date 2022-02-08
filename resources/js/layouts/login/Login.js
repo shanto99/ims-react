@@ -1,12 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { login } from "../../actions";
+import { login, getAuthUser } from "../../actions";
 
 import Logo from "../../images/logo.svg";
 import Illustration from "../../images/illustration.svg";
 
 import "./style.css";
+import { Navigate } from "react-router-dom";
 
 class Login extends React.Component {
     constructor(props) {
@@ -23,8 +24,25 @@ class Login extends React.Component {
         this.props.login(userId, password);
 
     }
+
+    adjustCssClass = () => {
+        const body = document.querySelector('body');
+        if(body) body.setAttribute('style', "padding: 0; margin: 0");
+    }
+
+    componentDidMount() {
+        this.props.getAuthUser();
+        this.adjustCssClass();
+    }
+
     render() {
         const {userId, password}  = this.state;
+        console.log("User: ", this.props.user);
+        if(this.props.user) {
+            return (
+                <Navigate to="/"/>
+            )
+        }
         return (
             <div className="login">
                 <div className="container sm:px-10">
@@ -77,7 +95,7 @@ class Login extends React.Component {
                                     <div className="intro-x flex text-gray-700 dark:text-gray-600 text-xs sm:text-sm mt-4">
                                         <div className="flex items-center mr-auto">
                                             <input id="remember-me" type="checkbox" className="form-check-input border mr-2"/>
-                                            <label className="cursor-pointer select-none" for="remember-me">Remember me</label>
+                                            <label className="cursor-pointer select-none" htmlFor="remember-me">Remember me</label>
                                         </div>
                                     </div>
 
@@ -101,4 +119,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, {login})(Login);
+export default connect(mapStateToProps, {login, getAuthUser})(Login);

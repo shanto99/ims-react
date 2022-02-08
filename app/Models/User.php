@@ -2,43 +2,96 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+
+use App\Services\PermissionService;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $table = "UserManager";
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
+    protected $primaryKey = "UserID";
+    public $incrementing = false;
+
+    protected $fillable = ['UserID', 'UserName', 'Designation', 'Email', 'Password', 'CreatedBy'];
+
     protected $hidden = [
-        'password',
-        'remember_token',
+        'Password', 'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function getPhotoUrlAttribute()
+    {
+        return url('media-example/no-image.png');
+    }
+
+    public function getAuthPassword()
+    {
+        return $this->Password;
+    }
+
+    public function menus()
+    {
+        $allPermissions = collect([]);
+        $roles = $this->roles ?: [];
+        $permissions = $this->permissions ?: [];
+
+        foreach ($roles as $role) {
+            $allPermissions = $allPermissions->merge($role->permissions);
+        }
+
+        foreach ($permissions as $permission) {
+            $allPermissions->push($permission);
+        }
+
+        $menus = [];
+
+        foreach ($allPermissions as $permission) {
+            $permissionMenus = PermissionService::getMenus($permission) ?: [];
+            foreach ($permissionMenus as $menu) {
+                $parameters = $menu->parameters ?: [];
+                $params = [];
+                foreach ($parameters as $parameter) {
+                    $params[$parameter->ParamKey] = $parameter->ParamValue;
+                }
+                $menus[$menu->Name] = [
+                    'title' => $menu->Title,
+                    'icon' => $menu->Icon,
+                    'route_name' => $menu->RouteName,
+                    'params' => $params
+                ];
+            }
+
+            $permissionSubMenus = PermissionService::getSubMenus($permission) ?: [];
+
+            foreach ($permissionSubMenus as $subMenu) {
+                $menu = $subMenu->menu;
+                if (!isset($menus[$menu->Name])) {
+                    $menus[$menu->Name] = [
+                        'title' => $menu->Title,
+                        'icon' => $menu->Icon,
+                        'sub_menu' => []
+                    ];
+                }
+                $parameters = $subMenu->parameters ?: [];
+                $params = [];
+                foreach ($parameters as $parameter) {
+                    $params[$parameter->ParamKey] = $parameter->ParamValue;
+                }
+
+                $menus[$menu->Name]['sub_menu'][$subMenu->Name] = [
+                    'title' => $subMenu->Title,
+                    'icon' => $subMenu->Icon,
+                    'route_name' => $subMenu->RouteName,
+                    'params' => $params
+                ];
+            }
+        }
+
+        return $menus;
+    }
 }

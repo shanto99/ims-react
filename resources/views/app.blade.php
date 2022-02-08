@@ -7,11 +7,13 @@
     <meta name="csrf-token" content={{ csrf_token() }}>
     <title>Inventory managerment</title>
     <link rel="stylesheet" href="{{ asset('css/theme.css') }}">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.5.2/velocity.min.js"></script>
 </head>
 
 <body style="padding: 0; margin: 0">
     <div id="app">
     </div>
+
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
 
