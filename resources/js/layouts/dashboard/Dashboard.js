@@ -22,6 +22,7 @@ class Dashboard extends React.Component {
                     <Sidepanel/>
                     <div className="content">
                         <Topbar/>
+
                     </div>
                 </div>
 

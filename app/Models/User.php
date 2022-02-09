@@ -34,64 +34,13 @@ class User extends Authenticatable
         return $this->Password;
     }
 
-    public function menus()
+    public function permissions()
     {
-        $allPermissions = collect([]);
-        $roles = $this->roles ?: [];
-        $permissions = $this->permissions ?: [];
+        return $this->belongsToMany(UserPermission::class, "ModelHasPermissions", "UserID", "permission_id");
+    }
 
-        foreach ($roles as $role) {
-            $allPermissions = $allPermissions->merge($role->permissions);
-        }
-
-        foreach ($permissions as $permission) {
-            $allPermissions->push($permission);
-        }
-
-        $menus = [];
-
-        foreach ($allPermissions as $permission) {
-            $permissionMenus = PermissionService::getMenus($permission) ?: [];
-            foreach ($permissionMenus as $menu) {
-                $parameters = $menu->parameters ?: [];
-                $params = [];
-                foreach ($parameters as $parameter) {
-                    $params[$parameter->ParamKey] = $parameter->ParamValue;
-                }
-                $menus[$menu->Name] = [
-                    'title' => $menu->Title,
-                    'icon' => $menu->Icon,
-                    'route_name' => $menu->RouteName,
-                    'params' => $params
-                ];
-            }
-
-            $permissionSubMenus = PermissionService::getSubMenus($permission) ?: [];
-
-            foreach ($permissionSubMenus as $subMenu) {
-                $menu = $subMenu->menu;
-                if (!isset($menus[$menu->Name])) {
-                    $menus[$menu->Name] = [
-                        'title' => $menu->Title,
-                        'icon' => $menu->Icon,
-                        'sub_menu' => []
-                    ];
-                }
-                $parameters = $subMenu->parameters ?: [];
-                $params = [];
-                foreach ($parameters as $parameter) {
-                    $params[$parameter->ParamKey] = $parameter->ParamValue;
-                }
-
-                $menus[$menu->Name]['sub_menu'][$subMenu->Name] = [
-                    'title' => $subMenu->Title,
-                    'icon' => $subMenu->Icon,
-                    'route_name' => $subMenu->RouteName,
-                    'params' => $params
-                ];
-            }
-        }
-
-        return $menus;
+    public function roles()
+    {
+        return $this->belongsToMany(UserRole::class, 'ModelHasRoles', 'UserID', 'role_id');
     }
 }

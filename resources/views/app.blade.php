@@ -13,6 +13,9 @@
 <body style="padding: 0; margin: 0">
     <div id="app">
     </div>
+    <div id="destination">
+
+    </div>
 
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
