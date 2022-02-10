@@ -5,13 +5,13 @@ import { Provider } from 'react-redux';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import ProtectedRoute from './ProtectedRoute';
 
+import store from './store';
+
 //pages
 import Login from './layouts/login/Login';
 import Dashboard from './layouts/dashboard/Dashboard';
-
-import store from './store';
-
-
+import Home from './pages/home/Home';
+import UserManager from './pages/userManager/UserManager';
 
 function IMS() {
     return (
@@ -20,13 +20,16 @@ function IMS() {
                 <Routes>
                     <Route path="/login" element={<Login/>} />
                     <Route
-                        path="/*"
+                        path="/"
                         element={
                             <ProtectedRoute>
                                 <Dashboard/>
                             </ProtectedRoute>
                         }
-                    />
+                    >
+                        <Route path="user-manager" element={<UserManager/>} />
+                        <Route path="/" element={<Home/>} />
+                    </Route>
                 </Routes>
             </Router>
         </Provider>

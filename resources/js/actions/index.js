@@ -16,7 +16,7 @@ export function getAuthUser() {
     return function(dispatch) {
         axios.get('/ims-react/user').then(function(res) {
             dispatch({ type: GET_USER, payload: res.data.user });
-        })
+        });
     }
 }
 

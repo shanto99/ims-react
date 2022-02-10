@@ -1,4 +1,5 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 import Sidepanel from "../../components/sidepanel/Sidepanel";
 import Topbar from "../../components/topBar/Topbar";
 
@@ -22,7 +23,7 @@ class Dashboard extends React.Component {
                     <Sidepanel/>
                     <div className="content">
                         <Topbar/>
-
+                        <Outlet/>
                     </div>
                 </div>
 

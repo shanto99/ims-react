@@ -8,7 +8,7 @@ import { logout } from "../../actions";
 
 import ProfileIcon from "../../images/profile-8.jpg";
 
-const Topbar = ({logout}) => {
+const Topbar = ({user, logout}) => {
     const [openMenu, setOpenMenu] = useState(false);
     const [referenceElement, setReferenceElement] = useState(null);
     const [popperElement, setPopperElement] = useState(null);
@@ -68,8 +68,8 @@ const Topbar = ({logout}) => {
                         <div className="w-56">
                             <div className="dropdown-menu__content box bg-theme-26 dark:bg-dark-6 text-white">
                                 <div className="p-4 border-b border-theme-27 dark:border-dark-3">
-                                    <div className="font-medium">Denzel Washington</div>
-                                    <div className="text-xs text-theme-28 mt-0.5 dark:text-gray-600">DevOps Engineer</div>
+                                    <div className="font-medium">{user.UserName}</div>
+                                    <div className="text-xs text-theme-28 mt-0.5 dark:text-gray-600">{user.Designation}</div>
                                 </div>
                                 <div className="p-2">
                                     <a href="#" className="flex items-center block p-2 transition duration-300 ease-in-out hover:bg-theme-1 dark:hover:bg-dark-3 rounded-md"> <Icon.User className="w-4 h-4 mr-2"/> Profile </a>
@@ -99,5 +99,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {logout})(Topbar);
-
-//export default Topbar

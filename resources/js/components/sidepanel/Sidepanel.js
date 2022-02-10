@@ -1,13 +1,17 @@
-import React from "react";
+import React, {useState} from "react";
+import { connect } from "react-redux";
 import logo from "../../images/logo.svg";
 import * as Icon from "react-feather";
 import Velocity from "velocity-animate";
+import { NavLink } from "react-router-dom";
 
-const SidePanel = () => {
+const SidePanel = ({user}) => {
+    const [selectedMenu, setSelectedMenu] = useState({menuId: 0, subMenuId: null});
 
     function toggleMenuList(e) {
         const toggleLink = e.currentTarget;
         const menuList = toggleLink.parentElement && toggleLink.parentElement.querySelector('ul');
+
         if(menuList && menuList.children.length > 0) {
             if(menuList.querySelector('li').offsetParent !== null) {
                 toggleLink.querySelector('.side-menu__sub-icon').classList.remove('transform');
@@ -17,7 +21,7 @@ const SidePanel = () => {
                 Velocity(menuList, "slideUp", {
                     duration: 300,
                     complete: function(el) {
-                         el.classList.remove("side-menu__sub-open");
+                         menuList.classList.remove("side-menu__sub-open");
                     }
                 });
             } else {
@@ -28,12 +32,42 @@ const SidePanel = () => {
                 Velocity(menuList, "slideDown", {
                     duration: 300,
                     complete: function(el) {
-                         el.classList.add("side-menu__sub-open");
+                         menuList.classList.add("side-menu__sub-open");
                     }
                 });
             }
         }
     }
+
+    function isMenuActive(menuId, subMenuId) {
+        if(subMenuId) {
+            return selectedMenu.menuId === menuId && selectedMenu.subMenuId === subMenuId;
+        }
+
+        return selectedMenu.menuId === menuId;
+    }
+
+     function selectMenu(menuId, subMenuId) {
+        setSelectedMenu({menuId, subMenuId});
+    }
+
+    function subMenuList(menu) {
+        const subMenus = menu.sub_menu;
+        const subMenuNames = Object.keys(subMenus);
+        return subMenuNames.map(function(subMenuName) {
+            const subMenu = subMenus[subMenuName];
+            const active = isMenuActive(menu.id, subMenu.id)
+            return (
+                <li>
+                    <NavLink to={`${subMenu.route || "#"}`} onClick={selectMenu.bind(null, menu.id, subMenu.id)} className = {`side-menu ${active ? 'side-menu--active' : ''}`}>
+                        <div className="side-menu__icon"> <Icon.Activity/> </div>
+                        <div className="side-menu__title"> {subMenu.title} </div>
+                    </NavLink>
+                </li>
+            )
+        });
+    }
+
 
     return (
         <React.Fragment>
@@ -44,39 +78,41 @@ const SidePanel = () => {
                 </a>
                 <div className="side-nav__devider my-6"></div>
                 <ul>
-                    <li>
-                        <a href="#" onClick={toggleMenuList} className="side-menu side-menu--active">
-                            <div className="side-menu__icon"> <Icon.Home/> </div>
-                            <div className="side-menu__title">
-                                Dashboard
-                                <div className="side-menu__sub-icon transform rotate-180"> <Icon.ChevronDown/> </div>
-                            </div>
-                        </a>
-                        <ul className="side-menu__sub-open">
+                    {Object.keys(user.menus).map(function(menuName) {
+                        const menu = user.menus[menuName];
+                        const subMenus = menu.sub_menu;
+                        const menuActive = isMenuActive(menu.id);
+                        return (
                             <li>
-                                <a href="index.html" className="side-menu side-menu--active">
-                                    <div className="side-menu__icon"> <Icon.Activity/> </div>
-                                    <div className="side-menu__title"> Overview 1 </div>
-                                </a>
+                                <NavLink to={`${menu.route || "#"}`} onClick={subMenus ? toggleMenuList : selectMenu.bind(null, menu.id)}
+
+                                className= {`side-menu ${menuActive ? 'side-menu--active' : ''}`}>
+                                    <div className="side-menu__icon"> <Icon.Home/> </div>
+                                    <div className="side-menu__title">
+                                        {menuName}
+                                        { subMenus
+                                        ? <div className="side-menu__sub-icon transform rotate-180"> <Icon.ChevronDown/> </div>
+                                        : null}
+                                    </div>
+                                </NavLink>
+                                { subMenus
+                                ? <ul className="">
+                                    {subMenuList(menu)}
+                                  </ul>
+                                : null}
                             </li>
-                            <li>
-                                <a href="side-menu-light-dashboard-overview-2.html" className="side-menu">
-                                    <div className="side-menu__icon"> <Icon.Activity/> </div>
-                                    <div className="side-menu__title"> Overview 2 </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="side-menu-light-dashboard-overview-3.html" className="side-menu">
-                                    <div className="side-menu__icon"> <Icon.Activity/> </div>
-                                    <div className="side-menu__title"> Overview 3 </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                        )
+                    })}
                 </ul>
             </nav>
         </React.Fragment>
     )
 }
 
-export default SidePanel;
+function mapStateToProps(state) {
+    return {
+        user: state.user
+    }
+}
+
+export default connect(mapStateToProps)(SidePanel);

@@ -24,7 +24,7 @@ class MenuService
 
         foreach ($allPermissions as $permission) {
             $permissionMenus = $permission->menus ?: [];
-            foreach ($permissionMenus as $menu) {
+            foreach ($permissionMenus as $index => $menu) {
                 $parameters = $menu->parameters ?: [];
                 $params = [];
                 foreach ($parameters as $parameter) {
@@ -33,20 +33,24 @@ class MenuService
                 $menus[$menu->Name] = [
                     'title' => $menu->Title,
                     'icon' => $menu->Icon,
-                    'route_name' => $menu->RouteName,
-                    'params' => $params
+                    'route' => $menu->Route,
+                    'params' => $params,
+                    'id' => $index
                 ];
             }
 
+            $menuCount = count($menus);
+
             $permissionSubMenus = $permission->subMenus ?: [];
 
-            foreach ($permissionSubMenus as $subMenu) {
+            foreach ($permissionSubMenus as $index => $subMenu) {
                 $menu = $subMenu->menu;
                 if (!isset($menus[$menu->Name])) {
                     $menus[$menu->Name] = [
                         'title' => $menu->Title,
                         'icon' => $menu->Icon,
-                        'sub_menu' => []
+                        'sub_menu' => [],
+                        'id' => $menuCount + $index
                     ];
                 }
                 $parameters = $subMenu->parameters ?: [];
@@ -58,8 +62,9 @@ class MenuService
                 $menus[$menu->Name]['sub_menu'][$subMenu->Name] = [
                     'title' => $subMenu->Title,
                     'icon' => $subMenu->Icon,
-                    'route_name' => $subMenu->RouteName,
-                    'params' => $params
+                    'route' => $subMenu->Route,
+                    'params' => $params,
+                    'id' => $menuCount + $index
                 ];
             }
         }

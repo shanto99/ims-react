@@ -18,7 +18,7 @@ class User extends Authenticatable
     protected $primaryKey = "UserID";
     public $incrementing = false;
 
-    protected $fillable = ['UserID', 'UserName', 'Designation', 'Email', 'Password', 'CreatedBy'];
+    protected $fillable = ['UserID', 'UserName', 'Designation', 'Email', 'Password', 'CreatedBy', 'Route'];
 
     protected $hidden = [
         'Password', 'remember_token',
