@@ -1,4 +1,7 @@
 import React from "react";
+import * as Icon from "react-feather";
+import {getUserWithPagination} from "../../API/userManager";
+import Paginator from "../../components/paginator/Paginator";
 
 class UserManager extends React.Component {
     constructor(props) {
@@ -11,8 +14,20 @@ class UserManager extends React.Component {
         }
     }
 
-    componentDidMount() {
+    getUsers = async (page) => {
+        const res = await getUserWithPagination(page);
+        return {
+            data: res.users,
+            totalPage: res.totalPage,
+        };
+    }
 
+    editUser = (userId) => {
+        console.log("Edit user: ", userId);
+    }
+
+    deleteUser = (userId) => {
+        console.log('Delete user: ', userId);
     }
 
     render() {
@@ -26,18 +41,25 @@ class UserManager extends React.Component {
                 <a href="#" className="btn btn-primary mt-5">Add user</a>
                 <div className="pos intro-y grid-cols-12 gap-5 mt-5">
                     <div className="col-span-12 md:col-span-12 lg:col-span-8">
-                        <div className="intro-y box col-span-12 overflow-auto lg:overflow-visible">
-                            <table className="table table-report mt-2">
-                                <thead>
-                                    <tr>
-                                        <th className="whitespace-nowrap">Name</th>
-                                        <th className="text-center whitespace-nowrap">Designation</th>
-                                        <th className="text-center whitespace-nowrap">Email</th>
-                                        <th className="text-center whitespace-nowrap">ACTIONS</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
+                        <Paginator
+                            dataSrc={this.getUsers}
+                            columns = {[
+                                {field: 'UserName', name: 'User name'},
+                                {field: 'Designation', name: 'Designation'},
+                                {field: 'Email', name: 'Email'},
+                                {field: 'UserID', name: 'Actions', render: (id) => {
+                                    return (
+                                        <div className="flex justify-center items-center">
+                                            <a className="flex items-center mr-3" onClick={() => this.editUser(id)}
+                                            href="#"> <Icon.CheckSquare class="w-4 h-4 mr-1"/> Edit </a>
+                                            <a className="flex items-center text-theme-6"
+                                            href="#" data-id="{{ $user->UserID }}">
+                                            <Icon.Trash2 className="w-4 h-4 mr-1"/> Delete </a>
+                                        </div>
+                                    );
+                                }}
+                            ]}
+                        />
                     </div>
                 </div>
             </>
