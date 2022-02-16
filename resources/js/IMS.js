@@ -12,6 +12,8 @@ import Login from './layouts/login/Login';
 import Dashboard from './layouts/dashboard/Dashboard';
 import Home from './pages/home/Home';
 import UserManager from './pages/userManager/UserManager';
+import AddUser from './pages/userManager/addUser/AddUser';
+import Role from './pages/role/Role';
 
 function IMS() {
     return (
@@ -28,6 +30,8 @@ function IMS() {
                         }
                     >
                         <Route path="user-manager" element={<UserManager/>} />
+                        <Route path="add-user" element={<AddUser/>} />
+                        <Route path="roles" element={<Role/>} />
                         <Route path="/" element={<Home/>} />
                     </Route>
                 </Routes>
