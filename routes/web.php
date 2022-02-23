@@ -15,6 +15,7 @@ Route::get('/', function () {
 Route::prefix('ims-react')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::middleware('auth')->group(function () {
+        Route::post('/create_user', [AuthController::class, 'createUser']);
         Route::get('/user', [AuthController::class, 'get_user']);
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/users_pagination/{page?}', [UserController::class, 'get_users_with_pagination']);

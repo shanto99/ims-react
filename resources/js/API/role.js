@@ -5,8 +5,9 @@ const getRoles = async function() {
     return res.data;
 }
 
-const createRole = function(role={}) {
-    return axios.post("/ims-react/create_role", role).then(res => res.data);
+const createRole = async function(role={}) {
+    const res = await axios.post("/ims-react/create_role", role);
+    return res.data;
 }
 
 const deleteRole = async function(id) {
