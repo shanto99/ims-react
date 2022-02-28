@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    public function get_roles()
+    public function getRoles()
     {
         $roles = UserRole::all();
         return response()->json([
@@ -16,7 +16,7 @@ class RoleController extends Controller
         ], 200);
     }
 
-    public function create_role(Request $request)
+    public function createRole(Request $request)
     {
         $request->validate([
             'name' => 'required'
@@ -35,7 +35,7 @@ class RoleController extends Controller
         ]);
     }
 
-    public function delete_role($roleId)
+    public function deleteRole($roleId)
     {
         return UserRole::find($roleId)->delete();
     }

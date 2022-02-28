@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class RolePermissionController extends Controller
 {
-    public function get_roles_with_permissions()
+    public function getRolesWithPermissions()
     {
         $roles = UserRole::with('permissions')->get();
         $roles = $roles->map(function ($role) {

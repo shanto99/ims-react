@@ -63,10 +63,10 @@ class AuthController extends Controller
             throw new \Exception('Wrong user id or password.');
         }
 
-        return $this->get_user($menuService);
+        return $this->getUser($menuService);
     }
 
-    public function get_user(MenuService $menuService)
+    public function getUser(MenuService $menuService)
     {
         $user = Auth::user();
         $user->menus = $menuService->menus($user);

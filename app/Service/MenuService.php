@@ -22,6 +22,8 @@ class MenuService
 
         $menus = [];
 
+        $uniqueKey = 0;
+
         foreach ($allPermissions as $permission) {
             $permissionMenus = $permission->menus ?: [];
             foreach ($permissionMenus as $index => $menu) {
@@ -35,8 +37,10 @@ class MenuService
                     'icon' => $menu->Icon,
                     'route' => $menu->Route,
                     'params' => $params,
-                    'id' => $index
+                    'id' => $uniqueKey
                 ];
+
+                $uniqueKey += 1;
             }
 
             $menuCount = count($menus);
@@ -50,8 +54,10 @@ class MenuService
                         'title' => $menu->Title,
                         'icon' => $menu->Icon,
                         'sub_menu' => [],
-                        'id' => $menuCount + $index
+                        'id' => $uniqueKey
                     ];
+
+                    $uniqueKey += 1;
                 }
                 $parameters = $subMenu->parameters ?: [];
                 $params = [];

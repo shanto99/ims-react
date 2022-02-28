@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class SubMenuController extends Controller
 {
-    public function get_sub_menus()
+    public function getSubMenus()
     {
         $subMenus = MenuSub::with('menu')->get();
         return response()->json([

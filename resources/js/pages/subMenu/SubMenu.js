@@ -11,7 +11,11 @@ class SubMenu extends React.Component {
         this.state = {
             menus: [],
             subMenus: [],
-            permissions: []
+            permissions: [],
+            title: '',
+            name: '',
+            menu: '',
+            permission: ''
         }
     }
 
@@ -29,8 +33,15 @@ class SubMenu extends React.Component {
         });
     }
 
+    handleFormSubmit = (e) => {
+        e.preventDefault();
+
+        const {title, name, menu, permission} = this.state;
+        console.log({title, name, menu, permission});
+    }
+
     render() {
-        const {menus, subMenus, permissions} = this.state;
+        const {menus, subMenus, permissions, title, name, menu, permission} = this.state;
         return (
             <>
                 <div className="intro-y flex items-center mt-8">
@@ -41,18 +52,35 @@ class SubMenu extends React.Component {
                 <div className="pos intro-y grid grid-cols-12 gap-5 mt-5">
                     <div className="col-span-12 lg:col-span-4">
                         <div className="intro-y box p-5">
-                            <form>
+                            <form onSubmit={this.handleFormSubmit}>
                                 <div className="mt-3">
                                     <label className="form-label">Title</label>
-                                    <input type="text" className="form-control" placeholder="Sub menu title"/>
+                                    <input type="text" className="form-control"
+                                    value={title}
+                                    onChange={e => {
+                                        this.setState({
+                                            title: e.target.value
+                                        });
+                                    }}
+                                    placeholder="Sub menu title"/>
                                 </div>
                                 <div className="mt-3">
                                     <label className="form-label">Name</label>
-                                    <input type="text" className="form-control" placeholder="Sub menu name"/>
+                                    <input type="text" className="form-control"
+                                     value={name}
+                                     onChange={e => {
+                                         this.setState({ name: e.target.value })
+                                     }}
+                                     placeholder="Sub menu name"/>
                                 </div>
                                 <div className="mt-3">
                                     <label className="form-label">Menu</label>
-                                    <select className="form-select sm:mr-2">
+                                    <select value={menu} className="form-select sm:mr-2" onChange={e => {
+                                        this.setState({
+                                            menu: e.target.value
+                                        })
+                                    }}>
+                                        <option value='' disabled>Select menu</option>
                                         {menus.map(menu => (
                                             <option value={menu.MenuID}>{menu.Title}</option>
                                         ))}
@@ -60,7 +88,13 @@ class SubMenu extends React.Component {
                                 </div>
                                 <div className="mt-3">
                                     <label className="form-label">Permission</label>
-                                    <select className="form-select sm:mr-2">
+                                    <select value={permission}
+                                    className="form-select sm:mr-2"
+                                    onChange={e => {
+                                        this.setState({ permission: e.target.value })
+                                    }}
+                                    >
+                                        <option value='' disabled>Select permission</option>
                                         {permissions.map(permission => (
                                             <option value={permission.id}>{permission.name}</option>
                                         ))}

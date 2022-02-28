@@ -5,4 +5,9 @@ const getSubMenus = async function() {
     return res.data;
 }
 
-export {getSubMenus};
+const createSubMenu = async function(title, name, menu, permission) {
+    const res = await axios.post('/ims-react/create_sub_menu', {title, name, menu, permission});
+    return res.data;
+}
+
+export {getSubMenus, createSubMenu};
