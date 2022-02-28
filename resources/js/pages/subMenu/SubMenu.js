@@ -1,7 +1,7 @@
 import React from "react";
 import { CheckSquare, Delete as DeleteIcon } from "react-feather";
 import {getMenus} from "../../API/menu";
-import { getSubMenus } from "../../API/subMenu";
+import { getSubMenus, createSubMenu } from "../../API/subMenu";
 import {getPermissions} from "../../API/permission";
 
 class SubMenu extends React.Component {
@@ -37,6 +37,7 @@ class SubMenu extends React.Component {
         e.preventDefault();
 
         const {title, name, menu, permission} = this.state;
+        createSubMenu(title, name, menu, permission)
         console.log({title, name, menu, permission});
     }
 
